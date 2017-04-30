@@ -1,0 +1,359 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../google-apis/google-maps-api.html">
+
+<!--
+### paper-input-location
+Material design: [Text fields](https://www.google.com/design/spec/components/text-fields.html) with location autocomplete
+
+`<paper-autocomplete-map>` is a single-line text field with Material Design styling and location autocomplete.
+
+    <paper-autocomplete-map label="Place"></paper-autocomplete-map>
+
+### Google Maps API
+
+This element work with the Google Maps API. You need a valid API Key. You can get one here: https://developers.google.com/maps/documentation/javascript/get-api-key.
+
+@demo demo/index.html
+-->
+
+
+<dom-module id="paper-autocomplete-map">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .element {
+        padding: 10px;
+      }
+    </style>
+
+    <google-maps-api id="maps" api-key="[[mapsApiKey]]" libraries="places" on-api-load="_onApiLoad"></google-maps-api>
+    <paper-autocomplete id="inputPaper"
+        always-float-label="{{alwaysFloatLabel}}"
+        auto-validate="{{autoValidate}}"
+        char-counter="{{charCounter}}"
+        error-message="{{errorMessage}}"
+        label="{{label}}"
+        max-length="{{maxLength}}"
+        min-length="{{minLength}}"
+        on-autocomplete-selected="_autoCompleteSelected"
+        on-autocomplete-change="_autoCompleteChanged"
+        name="{{name}}"
+        no-label-float="{{noLabelFloat}}"
+        pattern="{{pattern}}"
+        placeholder="{{placeholder}}"
+        remote-source="true"
+        required="{{required}}"
+        text="{{addressText}}"
+
+    >
+      <template autocomplete-custom-template>
+        <paper-item on-tap="_onSelect" id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false">
+          <div class="element">
+            <b> {{item.structured_formatting.main_text}}</b>
+            <br> {{item.structured_formatting.secondary_text}}
+          </div>
+          <paper-ripple></paper-ripple>
+        </paper-item>
+      </template>
+    </paper-autocomplete>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+
+    is: 'paper-autocomplete-map',
+
+    /**
+     * Fired when the user clicks on a place in the Google Map place list.
+     *
+     * @event place-clicked
+     */
+
+    properties: {
+      autoValidate: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * `errorMessage` The error message to display when the input is invalid.
+       */
+      errorMessage: {
+        type: String
+      },
+
+      /**
+       * `label` Text to display as the input label
+       */
+      label: String,
+
+      /**
+       * `noLabelFloat` Set to true to disable the floating label.
+       */
+      noLabelFloat: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * `alwaysFloatLabel` Set to true to always float label
+       */
+      alwaysFloatLabel: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * The placeholder text
+       */
+      placeholder: String,
+
+      /**
+       * `required` Set to true to mark the input as required.
+       */
+      required: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * `source` Array of objects with the options to execute the autocomplete feature
+       */
+      source: {
+        type: Array,
+        observer: '_onSourceChanged'
+      },
+
+
+      /**
+       * The current/selected text of the input
+       */
+      addressText: {
+        type: String,
+        notify: true,
+        value: ""
+      },
+
+      /**
+       * Disable showing the clear X button
+       */
+      disableShowClear: {
+        type: Boolean,
+        value: false
+      },
+
+
+
+      /**
+       * Event type separator
+       */
+      eventNamespace: {
+        type: String,
+        value: '-'
+      },
+
+      /**
+       * Minimum length to trigger suggestions
+       */
+      minLength: {
+        type: Number,
+        value: 1
+      },
+
+      /**
+       * `pattern` Pattern to validate input field
+       */
+      pattern: String,
+
+      /**
+       * allowedPattern` allowedPattern to validate input field
+       */
+      allowedPattern: String,
+
+      /**
+       * Set to `true` to show a character counter.
+       */
+      charCounter: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * The maximum length of the input value.
+       */
+      maxlength: {
+        type: Number
+      },
+
+      /**
+       * Name to be used by the autocomplete input. This is necessary if wanted to be integrated with iron-form.
+       */
+      name: String,
+
+      /**
+       * Function used to filter available items. This function is actually used by paper-autocomplete-suggestions,
+       * it is also exposed here so it is possible to provide a custom queryFn.
+       */
+      queryFn: {
+        type: Function
+      },
+
+
+      /**
+       * Option for the Autocomplete Google Maps API
+       */
+      autocompleteOptions: {
+        type: Object,
+        value: function() {
+          return {};
+        }
+      },
+      /**
+       * Place object is set after the user click on one Google Maps autocomplete result.
+       */
+      place: {
+        type: Object,
+        value: function() {
+          return {};
+        },
+        notify: true
+      },
+      /**
+       * Latitude of the last clicked place.
+       */
+      latitude: {
+        type: Number,
+        notify: true
+      },
+      /**
+       * Longitude of the last clicked place.
+       */
+      longitude: {
+        type: Number,
+        notify: true
+      },
+      /**
+       * Set to true to mark the input as required.
+       */
+      required: {
+        type: Boolean,
+        default: false
+      },
+      /**
+       * Describe prediction
+       */
+      predictionSelected: {
+        type: Array,
+        value: function() {
+          return [];
+        }
+      },
+      /**
+       * only City can be selected.
+       */
+      onlyCity: {
+        type: Boolean,
+        value: false,
+        notify: true
+      },
+      /**
+       * full address selected.
+       */
+      address: {
+        type: String,
+        value: "",
+        notify: true
+      },
+      /**
+       * Google Maps api key. To obtain an API key, see https://developers.google.com/maps/documentation/javascript/get-api-key.
+       */
+      mapsApiKey: String,
+      /**
+       * The label for this input.
+       */
+      label: String,
+      /**
+       * Autofocus propertie
+       */
+      autofocus: Boolean,
+      /**
+       * The error message to display when the input is invalid.
+       */
+      errorMessage: String,
+    },
+
+    _onApiLoad: function() {
+
+      this.service = new google.maps.places.AutocompleteService();
+
+
+      //google.maps.event.addListener(this.autocomplete, 'place_changed', this._onChangePlace.bind(this));
+    },
+    makeRequestInaCountry: function(searchTerm, countryLimit) {
+
+      //perform request. limit results to Australia
+      var me = this;
+      var request = {
+        input: searchTerm,
+        componentRestrictions: {
+          country: countryLimit
+        }, //example countryLimit
+      };
+      this.service.getPlacePredictions(request, function(predictions, status) {
+
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          //alert("Predicted");
+          me.$.inputPaper.suggestions(predictions);
+        }
+      });
+    },
+    makeRequest: function(searchTerm) {
+
+      var me = this;
+      //perform request. limit results to Australia
+      var request;
+      if (this.onlyCity) {
+        request = {
+          input: searchTerm
+        };
+      } else {
+        request = {
+          types: ['(cities)'],
+          input: searchTerm
+        };
+      }
+
+      this.service.getPlacePredictions(request,
+        function(predictions, status) {
+
+          if (status == google.maps.places.PlacesServiceStatus.OK) {
+            //alert("Predicted");
+            me.$.inputPaper.suggestions(predictions);
+          }
+        });
+    },
+    _autoCompleteChanged: function() {
+
+      this.makeRequest(this.addressText);
+    },
+    _autoCompleteSelected: function(e) {
+      this.predictionSelected = e.detail.option;
+      this.address = this.predictionSelected.description;
+      this.addressText = this.address;
+    },
+    _onChangePlace: function() {
+
+      /*this.$.inputPaper.invalid = false;
+      this.place = this.autocomplete.getPlace();
+      this.locationName = this.autocomplete.getPlace().formatted_address;
+      this.latitude = this.autocomplete.getPlace().geometry.location.lat();
+      this.longitude = this.autocomplete.getPlace().geometry.location.lng();
+      this.fire('place-clicked');*/
+
+    }
+  });
+</script>

@@ -1,5 +1,5 @@
 {
-  "name": "paper-input-location",
+  "name": "paper-autocomplete-map",
   "version": "2.0.0",
   "description": "A Material Design input with location autocomplete (Polymer 1.x)",
   "authors": [
@@ -9,11 +9,11 @@
     "type": "git",
     "url": "git://github.com/MacTheZazou/paper-input-location.git"
   },
-  "main": "paper-input-location.html",
+  "main": "paper-autocomplete-map.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
-    "paper-input": "^1.1.23",
-    "google-apis": "^1.1.7"
+    "google-apis": "^1.1.7",
+    "paper-autocomplete": "ellipticaljs/paper-autocomplete#^2.5.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
