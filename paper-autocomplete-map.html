@@ -66,8 +66,8 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       <template autocomplete-custom-template>
         <paper-item on-tap="_onSelect" id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false">
           <div class="entry">
-            <b> <span class="entry_title"> {{_computeTitle(item.structured_formatting.main_text)}} </span> </b>
-            <br> <span class="entry_subtitle"> {{_computeSubTitle(item.structured_formatting.secondary_text)}} </span>
+            <b> <span class="entry_title"> {{item.structured_formatting.main_text}} </span> </b>
+            <br> <span class="entry_subtitle"> {{item.structured_formatting.secondary_text}} </span>
           </div>
           <paper-ripple></paper-ripple>
         </paper-item>
