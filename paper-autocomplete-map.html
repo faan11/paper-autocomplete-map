@@ -28,6 +28,18 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       .element {
         padding: 10px;
       }
+      #inputPaper{
+        @apply --paper-autocomplete-input;
+      }
+      .entry{
+        @apply --paper-autocomplete-entry;
+      }
+      .entry_title{
+        @apply --paper-autocomplete-entry-title;
+      }
+      .entry_subtitle{
+        @apply --paper-autocomplete-entry-subtitle;
+      }
     </style>
 
     <google-maps-api id="maps" api-key="[[mapsApiKey]]" libraries="places" on-api-load="_onApiLoad"></google-maps-api>
@@ -47,15 +59,15 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         placeholder="{{placeholder}}"
         remote-source="true"
         required="{{required}}"
-        text="{{addressText}}"
+        text="{{_computeText(addressText)}}"
         text-property="description"
         value-property="description"
     >
       <template autocomplete-custom-template>
         <paper-item on-tap="_onSelect" id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false">
-          <div class="element">
-            <b> {{item.structured_formatting.main_text}}</b>
-            <br> {{item.structured_formatting.secondary_text}}
+          <div class="entry">
+            <b> <span class="entry_title"> {{_computeTitle(item.structured_formatting.main_text)}} </span> </b>
+            <br> <span class="entry_subtitle"> {{_computeSubTitle(item.structured_formatting.secondary_text)}} </span>
           </div>
           <paper-ripple></paper-ripple>
         </paper-item>
@@ -266,6 +278,23 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         value:false,
         notify:true
       },
+
+      titleOverflow: {
+        type: Boolean,
+        value:0,
+        notify:true
+      },
+      inputOverflow: {
+        type: Number,
+        value:0,
+        notify:true
+      },
+      subtitleOverflow: {
+        type: Number,
+        value:0,
+        notify:true
+      },
+
       /**
        * Google Maps api key. To obtain an API key, see https://developers.google.com/maps/documentation/javascript/get-api-key.
        */
@@ -282,6 +311,28 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
        * The error message to display when the input is invalid.
        */
       errorMessage: String,
+
+
+    },
+    _computeText:function(text){
+      if (this.inputOverflow<=0){
+        return text;
+      }
+      return text.substring(0,this.inputOverflow);
+    },
+    _computeTitle:function(text){
+      if (this.titleOverflow<=0){
+        return text;
+      }
+      return text.substring(0,this.titleOverflow);
+    },
+    _computeSubTitle:function(text){
+      if (this.subtitleOverflow<=0){
+        return text;
+
+      }
+
+      return text.substring(0,this.subtitleOverflow);
     },
 
     _onApiLoad: function() {
