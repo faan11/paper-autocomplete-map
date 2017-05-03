@@ -213,16 +213,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
           return {};
         }
       },
-      /**
-       * Place object is set after the user click on one Google Maps autocomplete result.
-       */
-      place: {
-        type: Object,
-        value: function() {
-          return {};
-        },
-        notify: true
-      },
+
       /**
        * Latitude of the last clicked place.
        */
@@ -298,7 +289,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       this.service = new google.maps.places.AutocompleteService();
 
 
-      //google.maps.event.addListener(this.autocomplete, 'place_changed', this._onChangePlace.bind(this));
+
     },
     makeRequestInaCountry: function(searchTerm, countryLimit) {
 
@@ -346,6 +337,9 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
     changeAddress:function(addr){
       var me = this;
       me.address = addr;
+      /*
+      get latitude and longitude
+      */
       geocoder = new google.maps.Geocoder();
 
       geocoder.geocode({
@@ -369,33 +363,29 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
     },
     autoCompleteSelected: function(e) {
       var me = this;
-      me.predictionSelected = e.detail.option;
-      me.address = me.predictionSelected.description;
+      var addr = me.predictionSelected.description;
+
+      /**
+      * get latitude and longitude
+      */
       geocoder = new google.maps.Geocoder();
       geocoder.geocode({
-       address: me.address
+       address: addr
       }, function(results, status) {
         if (status == 'OK') {
           var result = results[0];
           me.latitude = result.geometry.location.lat();
           me.longitude = result.geometry.location.lng();
+          me.address = addr;
           me.valid = true;
+          me.predictionSelected = e.detail.option;
         } else {
 
           //paperalert('Geocode was not successful for the following reason: ' + status);
         }
       });
-    },
-
-    _onChangePlace: function() {
-
-      /*this.$.inputPaper.invalid = false;
-      this.place = this.autocomplete.getPlace();
-      this.locationName = this.autocomplete.getPlace().formatted_address;
-      this.latitude = this.autocomplete.getPlace().geometry.location.lat();
-      this.longitude = this.autocomplete.getPlace().geometry.location.lng();
-      this.fire('place-clicked');*/
-
     }
+
+
   });
 </script>
