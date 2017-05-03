@@ -39,7 +39,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         label="{{label}}"
         max-length="{{maxLength}}"
         min-length="{{minLength}}"
-        on-autocomplete-selected="_autoCompleteSelected"
+        on-autocomplete-selected="autoCompleteSelected"
         on-autocomplete-change="_autoCompleteChanged"
         name="{{name}}"
         no-label-float="{{noLabelFloat}}"
@@ -48,7 +48,8 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         remote-source="true"
         required="{{required}}"
         text="{{addressText}}"
-
+        text-property="description"
+        value-property="description"
     >
       <template autocomplete-custom-template>
         <paper-item on-tap="_onSelect" id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false">
@@ -268,6 +269,12 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         value: "",
         notify: true
       },
+
+      valid: {
+        type: Boolean,
+        value:false,
+        notify:true
+      },
       /**
        * Google Maps api key. To obtain an API key, see https://developers.google.com/maps/documentation/javascript/get-api-key.
        */
@@ -336,15 +343,50 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
           }
         });
     },
-    _autoCompleteChanged: function() {
+    changeAddress:function(addr){
+      var me = this;
+      me.address = addr;
+      geocoder = new google.maps.Geocoder();
 
+      geocoder.geocode({
+       address: me.address
+      }, function(results, status) {
+        if (status == 'OK') {
+          var result = results[0];
+          me.latitude = result.geometry.location.lat();
+          me.longitude = result.geometry.location.lng();
+          me.addressText = me.address;
+          me.valid = true;
+        } else {
+
+          //paperalert('Geocode was not successful for the following reason: ' + status);
+        }
+      });
+    },
+    _autoCompleteChanged: function() {
+      this.valid = false;
       this.makeRequest(this.addressText);
     },
-    _autoCompleteSelected: function(e) {
-      this.predictionSelected = e.detail.option;
-      this.address = this.predictionSelected.description;
-      this.addressText = this.address;
+    autoCompleteSelected: function(e) {
+      var me = this;
+      me.predictionSelected = e.detail.option;
+      me.address = me.predictionSelected.description;
+      geocoder = new google.maps.Geocoder();
+      geocoder.geocode({
+       address: me.address
+      }, function(results, status) {
+        if (status == 'OK') {
+          var result = results[0];
+          me.latitude = result.geometry.location.lat();
+          me.longitude = result.geometry.location.lng();
+          me.valid = true;
+        } else {
+
+          //paperalert('Geocode was not successful for the following reason: ' + status);
+        }
+      });
     },
+
     _onChangePlace: function() {
 
       /*this.$.inputPaper.invalid = false;
