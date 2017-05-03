@@ -25,13 +25,12 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         display: block;
       }
 
-      .element {
-        padding: 10px;
-      }
+
       #inputPaper{
         @apply --paper-autocomplete-input;
       }
       .entry{
+        paddng:10px;
         @apply --paper-autocomplete-entry;
       }
       .entry_title{
@@ -279,21 +278,6 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         notify:true
       },
 
-      titleOverflow: {
-        type: Boolean,
-        value:0,
-        notify:true
-      },
-      inputOverflow: {
-        type: Number,
-        value:0,
-        notify:true
-      },
-      subtitleOverflow: {
-        type: Number,
-        value:0,
-        notify:true
-      },
 
       /**
        * Google Maps api key. To obtain an API key, see https://developers.google.com/maps/documentation/javascript/get-api-key.
@@ -313,26 +297,6 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       errorMessage: String,
 
 
-    },
-    _computeText:function(text){
-      if (this.inputOverflow<=0){
-        return text;
-      }
-      return text.substring(0,this.inputOverflow);
-    },
-    _computeTitle:function(text){
-      if (this.titleOverflow<=0){
-        return text;
-      }
-      return text.substring(0,this.titleOverflow);
-    },
-    _computeSubTitle:function(text){
-      if (this.subtitleOverflow<=0){
-        return text;
-
-      }
-
-      return text.substring(0,this.subtitleOverflow);
     },
 
     _onApiLoad: function() {
