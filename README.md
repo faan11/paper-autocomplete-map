@@ -1,5 +1,5 @@
 
-#&lt;paper-autocomplete-map&gt;
+# Paper-autocomplete-map
 
 Material design: Text fields with location autocomplete
 
