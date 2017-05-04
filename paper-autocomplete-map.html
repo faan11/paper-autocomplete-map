@@ -23,22 +23,23 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
     <style>
       :host {
         display: block;
-      }
 
 
-      #inputPaper{
-        @apply --paper-autocomplete-input;
-      }
+      };
+
+      paper-autocomplete{
+        @apply(--paper-autocomplete-map-input);
+      };
       .entry{
-        paddng:10px;
-        @apply --paper-autocomplete-entry;
-      }
+        padding:10px;
+        @apply(--paper-autocomplete-map-entry);
+      };
       .entry_title{
-        @apply --paper-autocomplete-entry-title;
-      }
+        @apply(--paper-autocomplete-map-entry-title);
+      };
       .entry_subtitle{
-        @apply --paper-autocomplete-entry-subtitle;
-      }
+        @apply(--paper-autocomplete-map-entry-subtitle);
+      };
     </style>
 
     <google-maps-api id="maps" api-key="[[mapsApiKey]]" libraries="places" on-api-load="_onApiLoad"></google-maps-api>
@@ -277,7 +278,11 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         value:false,
         notify:true
       },
-
+      limitResult:{
+        type: Number,
+        value: 0,
+        notify:true
+      },
 
       /**
        * Google Maps api key. To obtain an API key, see https://developers.google.com/maps/documentation/javascript/get-api-key.
@@ -320,6 +325,9 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
 
         if (status == google.maps.places.PlacesServiceStatus.OK) {
           //alert("Predicted");
+          if (me.limitResult != 0){
+            predictions = predictions.slice(0,me.limitResult);
+          }
           me.$.inputPaper.suggestions(predictions);
         }
       });
@@ -345,6 +353,9 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
 
           if (status == google.maps.places.PlacesServiceStatus.OK) {
             //alert("Predicted");
+            if (me.limitResult != 0){
+              predictions = predictions.slice(0,me.limitResult);
+            }
             me.$.inputPaper.suggestions(predictions);
           }
         });
@@ -353,7 +364,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       var me = this;
       me.address = addr;
       /*
-      get latitude and longitude
+        Get latitude and longitude
       */
       geocoder = new google.maps.Geocoder();
 
@@ -381,7 +392,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       var addr = me.predictionSelected.description;
 
       /**
-      * get latitude and longitude
+      * Get latitude and longitude
       */
       geocoder = new google.maps.Geocoder();
       geocoder.geocode({
