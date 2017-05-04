@@ -361,7 +361,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
           me.longitude = result.geometry.location.lng();
           me.addressText = me.address;
           me.valid = true;
-          me.fire("place-selected");
+          me.fire("autocomplete-place-selected",{geoCodeResult:result});
         } else {
 
           //paperalert('Geocode was not successful for the following reason: ' + status);
@@ -390,7 +390,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
           me.address = addr;
           me.valid = true;
           me.predictionSelected = e.detail.option;
-          me.fire("place-selected");
+          me.fire("autocomplete-place-selected",{geoCodeResult:result});
         } else {
 
           //paperalert('Geocode was not successful for the following reason: ' + status);
