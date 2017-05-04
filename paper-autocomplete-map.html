@@ -344,6 +344,12 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
           }
         });
     },
+    resetAddress:function(){
+      this.latitude = undefined;
+      this.longitude = undefined;
+      this.addressText = undefined;
+      this.valid = false;
+    },
     changeAddress:function(addr){
       var me = this;
       me.address = addr;
