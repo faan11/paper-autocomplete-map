@@ -374,7 +374,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
     },
     autoCompleteSelected: function(e) {
       var me = this;
-      var addr = me.predictionSelected.description;
+      var addr = e.detail.option.description;
 
       /**
       * Get latitude and longitude
