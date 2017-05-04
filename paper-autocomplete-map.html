@@ -24,7 +24,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       :host {
         display: block;
 
-
+        @apply(--paper-autocomplete-map-theme);
       };
 
       paper-autocomplete{
@@ -207,24 +207,8 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
        */
       name: String,
 
-      /**
-       * Function used to filter available items. This function is actually used by paper-autocomplete-suggestions,
-       * it is also exposed here so it is possible to provide a custom queryFn.
-       */
-      queryFn: {
-        type: Function
-      },
 
 
-      /**
-       * Option for the Autocomplete Google Maps API
-       */
-      autocompleteOptions: {
-        type: Object,
-        value: function() {
-          return {};
-        }
-      },
 
       /**
        * Latitude of the last clicked place.
@@ -377,6 +361,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
           me.longitude = result.geometry.location.lng();
           me.addressText = me.address;
           me.valid = true;
+          me.fire("place-selected");
         } else {
 
           //paperalert('Geocode was not successful for the following reason: ' + status);
@@ -405,6 +390,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
           me.address = addr;
           me.valid = true;
           me.predictionSelected = e.detail.option;
+          me.fire("place-selected");
         } else {
 
           //paperalert('Geocode was not successful for the following reason: ' + status);
