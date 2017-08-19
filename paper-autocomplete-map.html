@@ -20,51 +20,43 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
 
 <dom-module id="paper-autocomplete-map">
   <template>
-    <style>
-      :host {
-        display: block;
-        --primary-color: var(--autocomplete-focus-color);
-        @apply(--paper-autocomplete-map-theme);
-      };
 
-      paper-autocomplete{
-        @apply(--paper-autocomplete-map-input);
-      };
-      .entry{
-        padding:10px;
-        @apply(--paper-autocomplete-map-entry);
-      };
-      .entry_title{
-        @apply(--paper-autocomplete-map-entry-title);
-      };
-      .entry_subtitle{
-        @apply(--paper-autocomplete-map-entry-subtitle);
-      };
-    </style>
 
     <google-maps-api id="maps" api-key="[[mapsApiKey]]" libraries="places" on-api-load="_onApiLoad"></google-maps-api>
-    <paper-autocomplete id="inputPaper"
-        always-float-label="{{alwaysFloatLabel}}"
-        auto-validate="{{autoValidate}}"
-        char-counter="{{charCounter}}"
-        error-message="{{errorMessage}}"
-        label="{{label}}"
-        max-length="{{maxLength}}"
-        min-length="{{minLength}}"
-        on-autocomplete-selected="autoCompleteSelected"
-        on-autocomplete-change="_autoCompleteChanged"
-        name="{{name}}"
-        no-label-float="{{noLabelFloat}}"
-        pattern="{{pattern}}"
-        placeholder="{{placeholder}}"
-        remote-source="true"
-        required="{{required}}"
-        text="{{addressText}}"
-        text-property="description"
-        value-property="description"
-    >
-      <template autocomplete-custom-template>
-        <paper-item  class="entry" on-tap="_onSelect" id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false">
+    <paper-autocomplete id="inputPaper" always-float-label="{{alwaysFloatLabel}}" auto-validate="{{autoValidate}}" char-counter="{{charCounter}}" error-message="{{errorMessage}}" label="{{label}}" max-length="{{maxLength}}" min-length="{{minLength}}" on-autocomplete-selected="autoCompleteSelected"
+    on-autocomplete-change="_autoCompleteChanged" name="{{name}}" no-label-float="{{noLabelFloat}}" pattern="{{pattern}}" placeholder="{{placeholder}}" remote-source="true" required="{{required}}" text="{{addressText}}" text-property="description" value-property="description">
+      <template  slot="autocomplete-custom-template">
+        <style>
+          :host {
+            display: block;
+            --primary-color: var(--autocomplete-focus-color);
+            @apply(--paper-autocomplete-map-theme);
+          }
+
+          ;
+          paper-autocomplete {
+            @apply(--paper-autocomplete-map-input);
+          }
+
+          ;
+          .entry {
+            padding: 10px;
+            @apply(--paper-autocomplete-map-entry);
+          }
+
+          ;
+          .entry_title {
+            @apply(--paper-autocomplete-map-entry-title);
+          }
+
+          ;
+          .entry_subtitle {
+            @apply(--paper-autocomplete-map-entry-subtitle);
+          }
+
+          ;
+        </style>
+        <paper-item class="entry" on-tap="_onSelect" id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false">
           <div>
             <b> <span class="entry_title"> {{item.structured_formatting.main_text}} </span> </b>
             <br> <span class="entry_subtitle"> {{item.structured_formatting.secondary_text}} </span>
@@ -259,13 +251,13 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
 
       valid: {
         type: Boolean,
-        value:false,
-        notify:true
+        value: false,
+        notify: true
       },
-      limitResult:{
+      limitResult: {
         type: Number,
         value: 0,
-        notify:true
+        notify: true
       },
 
       /**
@@ -309,8 +301,8 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
 
         if (status == google.maps.places.PlacesServiceStatus.OK) {
           //alert("Predicted");
-          if (me.limitResult != 0){
-            predictions = predictions.slice(0,me.limitResult);
+          if (me.limitResult != 0) {
+            predictions = predictions.slice(0, me.limitResult);
           }
           me.$.inputPaper.suggestions(predictions);
         }
@@ -337,20 +329,20 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
 
           if (status == google.maps.places.PlacesServiceStatus.OK) {
             //alert("Predicted");
-            if (me.limitResult != 0){
-              predictions = predictions.slice(0,me.limitResult);
+            if (me.limitResult != 0) {
+              predictions = predictions.slice(0, me.limitResult);
             }
             me.$.inputPaper.suggestions(predictions);
           }
         });
     },
-    resetAddress:function(){
+    resetAddress: function() {
       this.latitude = undefined;
       this.longitude = undefined;
       this.addressText = undefined;
       this.valid = false;
     },
-    changeAddress:function(addr){
+    changeAddress: function(addr) {
       var me = this;
       me.address = addr;
       /*
@@ -359,7 +351,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       geocoder = new google.maps.Geocoder();
 
       geocoder.geocode({
-       address: me.address
+        address: me.address
       }, function(results, status) {
         if (status == 'OK') {
           var result = results[0];
@@ -367,7 +359,9 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
           me.longitude = result.geometry.location.lng();
           me.addressText = me.address;
           me.valid = true;
-          me.fire("autocomplete-place-selected",{geoCodeResult:result});
+          me.fire("autocomplete-place-selected", {
+            geoCodeResult: result
+          });
         } else {
 
           //paperalert('Geocode was not successful for the following reason: ' + status);
@@ -383,11 +377,11 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       var addr = e.detail.option.description;
 
       /**
-      * Get latitude and longitude
-      */
+       * Get latitude and longitude
+       */
       geocoder = new google.maps.Geocoder();
       geocoder.geocode({
-       address: addr
+        address: addr
       }, function(results, status) {
         if (status == 'OK') {
           var result = results[0];
@@ -396,7 +390,9 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
           me.address = addr;
           me.valid = true;
           me.predictionSelected = e.detail.option;
-          me.fire("autocomplete-place-selected",{geoCodeResult:result});
+          me.fire("autocomplete-place-selected", {
+            geoCodeResult: result
+          });
         } else {
 
           //paperalert('Geocode was not successful for the following reason: ' + status);
