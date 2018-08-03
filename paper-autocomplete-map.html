@@ -24,7 +24,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
 
     <google-maps-api id="maps" api-key="[[mapsApiKey]]" libraries="places" on-api-load="_onApiLoad"></google-maps-api>
     <paper-autocomplete id="inputPaper" always-float-label="{{alwaysFloatLabel}}" auto-validate="{{autoValidate}}" char-counter="{{charCounter}}" error-message="{{errorMessage}}" label="{{label}}" max-length="{{maxLength}}" min-length="{{minLength}}" on-autocomplete-selected="autoCompleteSelected"
-    on-text-changed="_textChange" on-autocomplete-change="_autoCompleteChanged" name="{{name}}" no-label-float="{{noLabelFloat}}" pattern="{{pattern}}" placeholder="{{placeholder}}" remote-source="true" required="{{required}}" text="{{addressText}}" text-property="description" value-property="description">
+    on-autocomplete-reset-blur="_textChange" on-text-changed="_textChange" on-autocomplete-change="_autoCompleteChanged" name="{{name}}" no-label-float="{{noLabelFloat}}" pattern="{{pattern}}" placeholder="{{placeholder}}" remote-source="true" required="{{required}}" text="{{addressText}}" text-property="description" value-property="description">
       <template  slot="autocomplete-custom-template">
         <style>
           :host {
@@ -368,9 +368,9 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         }
       });
     },
+
     _textChange:function() {
       if (this.addressText===""){
-
         this.setProperties({
           latitude:undefined,
           longitude:undefined,
