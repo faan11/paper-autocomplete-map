@@ -241,6 +241,14 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         notify: true
       },
       /**
+       * only City can be selected.
+       */
+      onlyAddress: {
+        type: Boolean,
+        value: false,
+        notify: true
+      },
+      /**
        * full address selected.
        */
       address: {
@@ -313,13 +321,18 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       var me = this;
       //perform request. limit results to Australia
       var request;
-      if (this.onlyCity) {
+      if (!this.onlyCity && !this.onlyAddress) {
         request = {
           input: searchTerm
         };
-      } else {
+      } else if (this.onlyCity) {
         request = {
           types: ['(cities)'],
+          input: searchTerm
+        };
+      } else if (this.onlyAddress) {
+        request = {
+          types: ['address'],
           input: searchTerm
         };
       }
