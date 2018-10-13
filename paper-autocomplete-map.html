@@ -248,6 +248,10 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         value: false,
         notify: true
       },
+      country: {
+        type: String,
+        notify: true
+      },
       /**
        * full address selected.
        */
@@ -321,6 +325,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       var me = this;
       //perform request. limit results to Australia
       var request;
+
       if (!this.onlyCity && !this.onlyAddress) {
         request = {
           input: searchTerm
@@ -334,6 +339,11 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
         request = {
           types: ['address'],
           input: searchTerm
+        };
+      }
+      if (this.country!==undefined){
+        request.componentRestrictions = {
+          country: this.country
         };
       }
 
