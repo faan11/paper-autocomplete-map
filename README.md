@@ -8,5 +8,5 @@ Material design: Text fields with location autocomplete
 # Example:
 
 ```html
-<paper-autocomplete-map-api-key="AIzaSyD3E1D9b-Z7ekrT3tbhl_dy8DCXuIuDDRc" label="Place"></paper-autocomplete-map>
+<paper-autocomplete-map-api-key="" label="Place"></paper-autocomplete-map>
 ```
