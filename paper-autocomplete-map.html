@@ -258,7 +258,8 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       address: {
         type: String,
         value: "",
-        notify: true
+        notify: true,
+        observer:"_changeAddress"
       },
 
       valid: {
@@ -299,6 +300,9 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
 
 
     },
+    _changeAddress: function(addr, oldaddr){
+      this.addressText = addr;
+    }
     makeRequestInaCountry: function(searchTerm, countryLimit) {
 
       //perform request. limit results to Australia
