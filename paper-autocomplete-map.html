@@ -232,14 +232,7 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
           return [];
         }
       },
-      /**
-       * only Zip can be selected.
-       */
-      onlyZip: {
-        type: Boolean,
-        value: false,
-        notify: true
-      },
+
       /**
        * only City can be selected.
        */
@@ -338,16 +331,11 @@ This element work with the Google Maps API. You need a valid API Key. You can ge
       //perform request. limit results to Australia
       var request;
 
-      if (!this.onlyCity && !this.onlyAddress && !this.onlyZip) {
+      if (!this.onlyCity && !this.onlyAddress) {
         request = {
           input: searchTerm
         };
-      } else if (this.onlyZip) {
-        request = {
-          types: ['postal_code'],
-          input: searchTerm
-        };
-      } else if (this.onlyCity) {
+      }  else if (this.onlyCity) {
         request = {
           types: ['(cities)'],
           input: searchTerm
